@@ -1,0 +1,1 @@
+# magnetic-inversion-dictionary
