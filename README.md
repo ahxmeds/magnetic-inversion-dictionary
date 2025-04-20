@@ -3,9 +3,9 @@
 This repository contains the official implementation for the paper:
 
 **"Inversion of Magnetic Data using Learned Dictionaries and Scale Space"**  
-Accepted to [Conference Name], 2025  
+Accepted to 10th International Conference on Scale Space and Variational Methods in Computer Vision (SSVM), 2025  
 Authors: Shadab Ahamed*, Simon Ghyselincks*, Pablo Chang Huang Arias, Julian Kloiber, Yasin Ranjbar, Jingrong Tang, Niloufar Zakariaei, Eldad Haber  
-[[Paper PDF]](./paper.pdf) | [[arXiv]](TBD)  
+[[Paper PDF]](./paper/MagneticInversionPaper.pdf) | [[arXiv]](https://arxiv.org/abs/2502.05451) 
 
 > This codebase reproduces all experiments and results from the paper, including dataset generation, model training, and evaluation.
 
