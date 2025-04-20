@@ -55,7 +55,7 @@ Where `x_true` is the true magnetic susceptibility model, `data_true` is the noi
 The variational method is implemented in the `ssmaginv/variational.py` file. An grid search to determine the optimal regularization hyperparameters is provided in `experiments/variational.py`. To run a grid search, the grid values may be changed in the file and execute with:
 
 ```bash
-python experiments/variational/grid_search.py --output grid_search_variational.csv
+python experiments/training/variational.py --output grid_search_variational.csv
 ```
 
 The optimal values used for the experiments in the paper are:

@@ -29,7 +29,7 @@ def compute_tv_model(x_true, data_true, alpha=1e-4, beta=1e3, z0=10):
 
     # Create a z-weighting tensor
     dim = model_cfg["dim"]
-    zdim = model_cfg["dim"]
+    zdim = dim[-1]
     zscale = model_cfg["h"][-1]
     Z_weights = l2.set_z_weights(zdim=zdim, zscale=zscale, z0=z0)
     xinv = l2.solve_tv(
@@ -45,8 +45,5 @@ def compute_tv_model(x_true, data_true, alpha=1e-4, beta=1e3, z0=10):
     )
 
     # Prediced forward model
-    pred = forMod(xinv)  # predicted 2d data
-    lossd = torch.mean((D - pred) ** 2) / torch.mean((D) ** 2)
-    lossx = torch.mean((xinv - x_true) ** 2) / torch.mean((x_true) ** 2)
-
-    return xinv, pred, lossx, lossd
+    datainv = forMod(xinv)  # predicted 2d data
+    return xinv, datainv
