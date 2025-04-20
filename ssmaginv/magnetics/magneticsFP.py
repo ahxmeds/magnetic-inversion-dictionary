@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 # %%
 class Magnetics(nn.Module):
     """
@@ -29,7 +30,7 @@ class Magnetics(nn.Module):
         self.h = h
         self.dirs = dirs
         self.device = device
-        
+
         # Compute the scale factor for the magnetic field response
         dV = torch.prod(self.h)
         mu_0 = 1
@@ -55,7 +56,7 @@ class Magnetics(nn.Module):
         S = torch.fft.fftshift(S)
         return S
 
-    def forward(self, M, height = 0):
+    def forward(self, M, height=0):
         """
         Perform the forward computation using FFT.
 
@@ -238,13 +239,14 @@ class TimeEmbKernel(nn.Module):
         K = self.C2(F.silu(self.C1(bt)))
         K = K.view(1, -1, k, k, k)
         return K
-    
+
+
 class PushForward(nn.Module):
     def __init__(self):
         super(PushForward, self).__init__()
 
     def forward(self, T, UVW):
-        device = T.device        
+        device = T.device
         D, H, W = T.shape[-3:]
 
         # Create normalized coordinate grid in [-1, 1]
@@ -253,7 +255,9 @@ class PushForward(nn.Module):
             torch.linspace(-1, 1, H, device=device),
             torch.linspace(-1, 1, W, device=device),
         )
-        grid = torch.stack((x, y, z), dim=-1).unsqueeze(0).unsqueeze(0)  # [1, 1, D, H, W, 3]
+        grid = (
+            torch.stack((x, y, z), dim=-1).unsqueeze(0).unsqueeze(0)
+        )  # [1, 1, D, H, W, 3]
 
         transformation_grid = grid + UVW
         Th = F.grid_sample(T, transformation_grid.squeeze(1), align_corners=True)

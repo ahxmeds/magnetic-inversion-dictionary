@@ -1,13 +1,15 @@
-import os, sys
-import torch
+import os
+import sys
+
 import numpy as np
+import torch
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 import ssmaginv.config as config
 from ssmaginv.dataset.data_dict import save_npz_true_data
 from ssmaginv.dataset.mag_data import MagneticDataset
 from ssmaginv.magnetics.magneticsFP import Magnetics
-from torch.utils.data import DataLoader
 
 
 def pad_zeros_at_front(num, N):

@@ -1,4 +1,5 @@
 import os
+
 import torch
 from numpy import pi as np_pi
 
@@ -10,6 +11,7 @@ DEFAULT_DIM = torch.tensor([64, 64, 32])  # Grid dimensions
 DEFAULT_CELL_SIZE = torch.tensor([100.0, 100.0, 100.0])  # Cell sizes in meters
 DEFAULT_DIRS = torch.tensor([np_pi / 2] * 4)  # Magnetic angles (I, A, I0, A0)
 
+
 def get_default_magnetics_config(device="cpu"):
     return {
         "dim": DEFAULT_DIM,
@@ -17,6 +19,7 @@ def get_default_magnetics_config(device="cpu"):
         "dirs": DEFAULT_DIRS,
         "device": torch.device(device),
     }
+
 
 # Base data directory (relative to repo or via env override)
 DATA_ROOT = os.getenv("SSMAGINV_DATA", os.path.join(PROJECT_ROOT, "data"))
@@ -34,5 +37,3 @@ PREDS_DIR = os.path.join(RESULTS_DIR, "PREDS")
 
 for d in [RESULTS_DIR, METRICS_DIR, PREDS_DIR]:
     os.makedirs(d, exist_ok=True)
-    
-    

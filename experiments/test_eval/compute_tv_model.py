@@ -1,12 +1,14 @@
 import torch
-from ssmaginv.magnetics import Magnetics
-import ssmaginv.solvers.variational as l2
+
 import ssmaginv.config as config
+import ssmaginv.solvers.variational as l2
+from ssmaginv.magnetics import Magnetics
+
 
 def compute_tv_model(x_true, data_true, alpha=1e-4, beta=1e3, z0=10):
     """
     Compute the total variation model for a given true model and data.
-    
+
     Parameters::
         x_true (torch.Tensor): The true mag sus model tensor.
         data_true (torch.Tensor): The true mag forward data tensor.
@@ -14,9 +16,11 @@ def compute_tv_model(x_true, data_true, alpha=1e-4, beta=1e3, z0=10):
         beta (float): Regularization parameter for the z-regularization.
         z0 (float): Offset parameter for the z-weighting.
     """
-    
-    model_cfg = config.get_default_magnetics_config(device=x_true.device)  
-    model_cfg["device"] = x_true.device  # Ensure the magnetics model is on the same device as x_true
+
+    model_cfg = config.get_default_magnetics_config(device=x_true.device)
+    model_cfg["device"] = (
+        x_true.device
+    )  # Ensure the magnetics model is on the same device as x_true
     forMod = Magnetics(**model_cfg)  # Forward model operator
     D = data_true
 

@@ -1,33 +1,34 @@
-import torch
-import numpy as np
-from torch.utils.data import DataLoader
-import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import torch
+from torch.utils.data import DataLoader
 
 import ssmaginv.config as config
-from ssmaginv.magnetics import Magnetics
 from ssmaginv.dataset.mag_data import MagneticDataset
-from ssmaginv.dataset.saved_dataset import get_train_set, get_valid_set, get_test_set
-from ssmaginv.solvers.variational import solve_tv, set_z_weights
+from ssmaginv.dataset.saved_dataset import (get_test_set, get_train_set,
+                                            get_valid_set)
+from ssmaginv.magnetics import Magnetics
 from ssmaginv.plot.plot import plot_mixed
+from ssmaginv.solvers.variational import set_z_weights, solve_tv
 
-    
+
 def grid_search(output_path="grid_search_results.csv"):
     """
     Perform a grid search over the parameters alpha, beta, and z0 to find the best combination
     for the model inversion task.
-    
+
     Hyperparameters:
         - alpha: TV regularization parameter
         - beta: Z-weighting regularization parameter
         - z0: Z-weighting parameter
         - w1: Weight for data loss |data_true - data_pred|^2
         - w2: Weight for model loss |x_true - x_pred|^2
-        
+
     The results are saved to a CSV file for further analysis.
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+
     # Setup magnetics model size and operator
     model_cfg = config.get_default_magnetics_config(device=device)
     dim = model_cfg["dim"]
@@ -38,10 +39,10 @@ def grid_search(output_path="grid_search_results.csv"):
     dataset = get_valid_set()
     if dataset is None:
         raise RuntimeError("Dataset is missing.")
-    
+
     # Define the DataLoader
     batch_size = 16
-    num_workers = 0  
+    num_workers = 0
     data_loader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -62,7 +63,7 @@ def grid_search(output_path="grid_search_results.csv"):
             1e-4,
             2e-4,
         ]
-    )  
+    )
     beta_values = np.array(
         [
             0.5e3,
@@ -109,7 +110,9 @@ def grid_search(output_path="grid_search_results.csv"):
                     )
 
                     # Compute losses
-                    data_loss = torch.mean((data_true - forMod(xinv)) ** 2) / torch.mean(D**2)
+                    data_loss = torch.mean(
+                        (data_true - forMod(xinv)) ** 2
+                    ) / torch.mean(D**2)
                     model_loss = torch.mean((xinv - xtrue) ** 2) / torch.mean(xtrue**2)
                     loss = w1 * data_loss + w2 * model_loss
 
@@ -156,6 +159,7 @@ def grid_search(output_path="grid_search_results.csv"):
     print(
         f"\nBest Parameters - Alpha: {best_params[0]}, Beta: {best_params[1]}, z0: {best_params[2]}"
     )
+
 
 def solve_single(idx):
     """

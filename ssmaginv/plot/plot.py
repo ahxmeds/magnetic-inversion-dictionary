@@ -1,7 +1,7 @@
-import torch
+import matplotlib.pyplot as plt
 import numpy as np
 import pyvista as pv
-import matplotlib.pyplot as plt
+import torch
 
 
 def plot_model_2d(M, n_slices=None, cmap="cet_rainbow", figsize=(12, 6)):
@@ -17,8 +17,8 @@ def plot_model_2d(M, n_slices=None, cmap="cet_rainbow", figsize=(12, 6)):
     Returns:
     - matplotlib.figure.Figure: The created figure.
     """
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
 
     # Dimensions of the 3D tensor
     nx, ny, nz = M.shape[-3], M.shape[-2], M.shape[-1]
@@ -589,10 +589,11 @@ def plot_triplet(
 
     return p
 
+
 def plot_data_pairs(
     data_pairs,
-    names = None,
-    losses = None,
+    names=None,
+    losses=None,
     spacing=(1.0, 1.0, 1.0),
     height=0,
     fig_size=(1800, 500),
@@ -603,7 +604,7 @@ def plot_data_pairs(
     """
     Take a list of (mag_data, forward_data) pairs and plot them in a grid layout.
     """
-    
+
     # Validate input
     if not isinstance(data_pairs, (list, tuple)) or len(data_pairs) == 0:
         raise ValueError(
@@ -628,7 +629,6 @@ def plot_data_pairs(
         window_size=fig_size,
     )
 
-
     for i, ((mag_data, forward_data), name) in enumerate(zip(data_pairs, names)):
         print(f"mag_data: {mag_data.shape}, forward_data: {forward_data.shape}")
         p.subplot(0, i)
@@ -645,10 +645,14 @@ def plot_data_pairs(
             p.add_title(name, font_size=title_font_size)
         if losses is not None and losses[i][0] is not None:
             loss_pair = losses[i]
-            p.add_text(f"Loss m: {loss_pair[0]:.3f}", position="lower_left", font_size=12)
-            p.add_text(f"Loss d: {loss_pair[1]:.4f}", position="lower_right", font_size=12)
+            p.add_text(
+                f"Loss m: {loss_pair[0]:.3f}", position="lower_left", font_size=12
+            )
+            p.add_text(
+                f"Loss d: {loss_pair[1]:.4f}", position="lower_right", font_size=12
+            )
             if i == 0:
                 p.add_axes()
         p.zoom_camera(0.95)
-            
+
     return p

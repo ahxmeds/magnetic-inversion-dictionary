@@ -4,23 +4,11 @@ Implementation of TV regularization for the magnetic inverse problem.
 References:
 [1] Vogel, C. R. (2002). Total Variation Regularization. In Computational Methods for Inverse Problems (pp. 129–150).
 Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9780898717570.ch8
-[2] Ahamed, Shadab, et al. "Inversion of Magnetic Data using Learned Dictionaries and Scale Space." 
+[2] Ahamed, Shadab, et al. "Inversion of Magnetic Data using Learned Dictionaries and Scale Space."
 arXiv preprint arXiv:2502.05451 (2025).
 """
 
 import torch
-import numpy as np
-import matplotlib.pyplot as plt
-from functools import partial
-import pandas as pd
-
-import pyvista as pv
-
-import ssmaginv.config as config
-from ssmaginv.magnetics import Magnetics
-from ssmaginv.plot import plot_model_with_forward, plot_mixed
-
-from torch.utils.data import DataLoader
 
 
 def conj_gradient(
