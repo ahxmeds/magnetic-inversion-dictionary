@@ -1,9 +1,10 @@
 import torch
 import numpy as np
 import pyvista as pv
+import matplotlib.pyplot as plt
 
 
-def plot_model_2d(M, n_slices=None, cmap="rainbow", figsize=(12, 6)):
+def plot_model_2d(M, n_slices=None, cmap="cet_rainbow", figsize=(12, 6)):
     """
     Plot an array of 2D slices for a given 3D tensor in a single grid-style plot.
 
@@ -97,7 +98,7 @@ def plot_model_3d(M, plotter=None, threshold_value=0.05):
     # Add the thresholded mesh
     plotter.add_mesh(
         thresholded,
-        cmap="rainbow",
+        cmap="cet_rainbow",
         opacity=0.7,
         show_edges=True,
         label="Magnetization > {:.2f}".format(threshold_value),
@@ -166,7 +167,7 @@ def plot_model_with_forward(
     # Add the thresholded mesh with specified clim
     plotter.add_mesh(
         thresholded,
-        cmap="rainbow",
+        cmap="cet_rainbow",
         opacity=0.7,
         show_edges=False,
         clim=clim_mag,
@@ -324,13 +325,13 @@ def plot_mixed(
 
     p.subplot(0, 2)
     plot_model_2d_pyvista(
-        mag_data_true, cmap="rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
+        mag_data_true, cmap="cet_rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
     )
     p.add_title("True Model", font_size=6)
 
     p.subplot(0, 3)
     plot_model_2d_pyvista(
-        mag_data_model, cmap="rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
+        mag_data_model, cmap="cet_rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
     )
     p.add_title("Inverted Model", font_size=6)
 
@@ -373,7 +374,7 @@ def plot_mixed(
 
 
 def plot_model_2d_pyvista(
-    M, n_slices=None, cmap="rainbow", clim=None, spacing=(1.0, 1.0), plotter=None
+    M, n_slices=None, cmap="cet_rainbow", clim=None, spacing=(1.0, 1.0), plotter=None
 ):
     if plotter is None:
         plotter = pv.Plotter()
@@ -522,19 +523,19 @@ def plot_triplet(
 
     p.subplot(0, 3)
     plot_model_2d_pyvista(
-        mag_data_true, cmap="rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
+        mag_data_true, cmap="cet_rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
     )
     p.add_title("True Model", font_size=6)
 
     p.subplot(0, 4)
     plot_model_2d_pyvista(
-        mag_data_rl, cmap="rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
+        mag_data_rl, cmap="cet_rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
     )
     p.add_title("Scale Space Model", font_size=6)
 
     p.subplot(0, 5)
     plot_model_2d_pyvista(
-        mag_data_var, cmap="rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
+        mag_data_var, cmap="cet_rainbow", clim=clim_mag, n_slices=n_slices, plotter=p
     )
     p.add_title("Variational Model", font_size=6)
 
@@ -586,4 +587,68 @@ def plot_triplet(
     p.link_views((3, 4, 5))
     p.link_views((6, 7, 8))
 
+    return p
+
+def plot_data_pairs(
+    data_pairs,
+    names = None,
+    losses = None,
+    spacing=(1.0, 1.0, 1.0),
+    height=0,
+    fig_size=(1800, 500),
+    clim_mag=None,
+    clim_forward=None,
+    title_font_size=12,
+):
+    """
+    Take a list of (mag_data, forward_data) pairs and plot them in a grid layout.
+    """
+    
+    # Validate input
+    if not isinstance(data_pairs, (list, tuple)) or len(data_pairs) == 0:
+        raise ValueError(
+            "data_pairs must be a non-empty list or tuple of (mag_data, forward_data) pairs."
+        )
+
+    # Compute common clims if not provided
+    if clim_mag is None:
+        scalar_min_mag = min(pair[0].min() for pair in data_pairs).item()
+        scalar_max_mag = max(pair[0].max() for pair in data_pairs).item()
+        clim_mag = (scalar_min_mag, scalar_max_mag)
+
+    if clim_forward is None:
+        scalar_min_forward = min(pair[1].min() for pair in data_pairs).item()
+        scalar_max_forward = max(pair[1].max() for pair in data_pairs).item()
+        clim_forward = (scalar_min_forward, scalar_max_forward)
+
+    # Initialize the PyVista Plotter with the desired layout
+    num_pairs = len(data_pairs)
+    p = pv.Plotter(
+        shape=(1, num_pairs),  # Single row, one column per data pair
+        window_size=fig_size,
+    )
+
+
+    for i, ((mag_data, forward_data), name) in enumerate(zip(data_pairs, names)):
+        print(f"mag_data: {mag_data.shape}, forward_data: {forward_data.shape}")
+        p.subplot(0, i)
+        plot_model_with_forward(
+            mag_data,
+            forward_data,
+            spacing,
+            height,
+            plotter=p,
+            clim_mag=clim_mag,
+            clim_forward=clim_forward,
+        )
+        if name is not None and name[i] is not None:
+            p.add_title(name, font_size=title_font_size)
+        if losses is not None and losses[i][0] is not None:
+            loss_pair = losses[i]
+            p.add_text(f"Loss m: {loss_pair[0]:.3f}", position="lower_left", font_size=12)
+            p.add_text(f"Loss d: {loss_pair[1]:.4f}", position="lower_right", font_size=12)
+            if i == 0:
+                p.add_axes()
+        p.zoom_camera(0.95)
+            
     return p

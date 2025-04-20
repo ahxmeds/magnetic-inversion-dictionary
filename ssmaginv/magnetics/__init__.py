@@ -1,0 +1,1 @@
+from ssmaginv.magnetics.magneticsFP import Magnetics, TimeEmbKernel, PushForward

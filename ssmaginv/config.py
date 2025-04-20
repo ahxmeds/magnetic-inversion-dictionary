@@ -27,5 +27,12 @@ VALID_DIR = os.path.join(DATA_ROOT, "validset")
 
 for d in [TEST_DIR, TRAIN_DIR, VALID_DIR]:
     os.makedirs(d, exist_ok=True)
+
+RESULTS_DIR = os.path.join(PROJECT_ROOT, "RESULTS")
+METRICS_DIR = os.path.join(RESULTS_DIR, "METRICS")
+PREDS_DIR = os.path.join(RESULTS_DIR, "PREDS")
+
+for d in [RESULTS_DIR, METRICS_DIR, PREDS_DIR]:
+    os.makedirs(d, exist_ok=True)
     
     

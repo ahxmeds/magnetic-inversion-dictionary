@@ -116,7 +116,7 @@ class Magnetics(nn.Module):
 
         # Initialize the result tensor
         m_adj = torch.zeros(
-            1, 1, self.dim[0], self.dim[1], self.dim[2], device=self.device
+            data.shape[0], 1, self.dim[0], self.dim[1], self.dim[2], device=self.device
         )
 
         for i in range(self.dim[2]):
@@ -139,7 +139,7 @@ class Magnetics(nn.Module):
             b_spatial = torch.fft.fftshift(b_spatial)
 
             # Store the result for the current layer
-            m_adj[..., i] = b_spatial
+            m_adj[:, :, :, :, i] = b_spatial
 
             # Update depth
             z += dz

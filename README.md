@@ -48,3 +48,27 @@ save_dict = {
 ```
 
 Where `x_true` is the true magnetic susceptibility model, `data_true` is the noiseless forward model output, and `data_true_noise` is the noisy forward model output.
+
+## Experiments
+
+### Variational Method
+The variational method is implemented in the `ssmaginv/variational.py` file. An grid search to determine the optimal regularization hyperparameters is provided in `experiments/variational.py`. To run a grid search, the grid values may be changed in the file and execute with:
+
+```bash
+python experiments/variational/grid_search.py --output grid_search_variational.csv
+```
+
+The optimal values used for the experiments in the paper are:
+
+```python
+    alpha = 1e-4  # TV regularization
+    beta = 1e3  # Z-weighting regularization
+    z0 = 10  # Z-weighting parameter
+```
+
+Inference on the test set can be performed with:
+
+```bash
+python experiments/test_eval/evaluate_method.py --method tv
+```
+with an optional `--batch_size` argument to set the batch size for evaluation. The predicted models and statistics will be saved in the `RESULTS/` directory under the `Variational` folder.
