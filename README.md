@@ -72,3 +72,39 @@ Inference on the test set can be performed with:
 python experiments/test_eval/evaluate_method.py --method tv
 ```
 with an optional `--batch_size` argument to set the batch size for evaluation. The predicted models and statistics will be saved in the `RESULTS/` directory under the `Variational` folder.
+
+### Cosine Dictionary
+**TODO**: Add cosine dictionary training script
+
+### Shared Dictionary
+**TODO**: Add shared dictionary training script
+
+### Learned Dictionary
+**TODO**: Add learned dictionary training script
+
+---
+## Images and Analysis
+
+#### Compare Methods Visually
+Once predicted models are computed over the test set, the results can be visualized and/or saved with a helper plotting script. Use the `--save` flag to change between viewing and saving. 
+
+```bash
+python experiments/plotting/compare_3dmodels_plot.py --index i
+
+## or
+python experiments/plotting/compare_3dmodels_plot.py --index i --save
+```
+where `i` is the index of the sample to visualize.
+
+The test results across all methods for samples `1,11,19` have been saved in the figures directory.
+
+#### Compare Methods Statistics
+
+The statistics of the predicted models can be computed and saved with the following command:
+
+```bash
+python experiments/plotting/loss_comparison_plot.py
+```
+
+The results for from the paper are saved in the `figures/` directory. 
+
