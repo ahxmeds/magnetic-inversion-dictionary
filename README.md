@@ -21,7 +21,7 @@ cd magnetic-inversion-dictionary
 pip install -e .
 ```
 
-This will install the `ssmaginv` package locally so that any updates to the code reflect immediately in your environment.
+This will install the `ssmaginv` package locally so that any updates to the code reflect immediately in your environment. Most project dependencies are included in the `pyproject.toml` file. A `requirements.txt` and `environment.yml` file are also provided for convenience. 
 
 ## Dataset
 
@@ -76,11 +76,41 @@ with an optional `--batch_size` argument to set the batch size for evaluation. T
 ### Cosine Dictionary
 **TODO**: Add cosine dictionary training script
 
+**Inference** on the test set can be performed with:
+
+```bash
+python experiments/test_eval/evaluate_method.py --method cosine
+```
+
 ### Shared Dictionary
-**TODO**: Add shared dictionary training script
+Training can be done using the general dictionary training script located at `experiments/training/dictionary.py`. The training script takes the following arguments:
+```bash
+python experiments\training\dictionary.py --model single --bs 16 --epochs 200 
+```
+where `--model` is set to be a single shared dictionary, `--bs` is the batch size, and `--epochs` is the number of epochs to train. The training script will save the best model weights in the `RESULTS/WEIGHTS` directory. The training script will also save the training and validation loss in a CSV file in logs folder.
+
+**Inference** on the test set can be performed with:
+
+```bash
+python experiments/test_eval/evaluate_method.py --method single_dict
+```
+
+with predictions stored in `RESULTS/PREDS` in the `SingleDict` folder.
 
 ### Learned Dictionary
-**TODO**: Add learned dictionary training script
+Training can be done using the general dictionary training script located at `experiments/training/dictionary.py`. The training script takes the following arguments:
+```bash
+python experiments\training\dictionary.py --model scale --bs 16 --epochs 200 
+```
+where `--model` is set to be a single shared dictionary, `--bs` is the batch size, and `--epochs` is the number of epochs to train. The training script will save the best model weights in the `RESULTS/WEIGHTS` directory. The training script will also save the training and validation loss in a CSV file in logs folder.
+
+**Inference** on the test set can be performed with:
+
+```bash
+python experiments/test_eval/evaluate_method.py --method shared_dict
+```
+
+with predictions stored in `RESULTS/PREDS` in the `UnrolledDict` folder.
 
 ---
 ## Images and Analysis
