@@ -1,0 +1,20 @@
+[project]
+name = "ssmaginv"
+version = "0.1.0"
+description = "Scale space magnetic inversion with dictionary learning"
+authors = [
+    { name = "Shadab Ahamed", email = "shadab.ahamed@hotmail.com" },
+    { name = "Simon Ghyselincks", email = "sghyselincks@gmail.com" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+    "numpy",
+    "pyvista",    
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
