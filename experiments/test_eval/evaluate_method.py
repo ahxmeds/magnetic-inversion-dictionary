@@ -3,12 +3,16 @@ import os
 import numpy as np
 import pandas as pd
 import torch
-from compute_tv_model import compute_tv_model
 from torch.utils.data import DataLoader
 
 from ssmaginv.config import (METRICS_DIR, PREDS_DIR,
                              get_default_magnetics_config)
 from ssmaginv.dataset.saved_dataset import get_test_set
+from ssmaginv.solvers.dictionary import SingleDictRecovery, ScaleSpaceRecovery
+
+from compute_tv_model import compute_tv_model
+from compute_dict_model import get_inference_model_fn
+from compute_cosine_model import compute_cosine_model
 
 
 def compute_test_predictions(method: callable, name: str, batch_size: int = 16):
@@ -110,7 +114,7 @@ if __name__ == "__main__":
         "--method",
         type=str,
         required=True,
-        choices=["tv"],
+        choices=["tv", "single_dict", "shared_dict", "cosine"],
         help="Inference method to use (currently only 'tv' is supported).",
     )
     parser.add_argument(
@@ -126,6 +130,26 @@ if __name__ == "__main__":
         method = compute_tv_model
         name = "Variational"
         args.batch_size = 1 # Override for TV method since it thresholds
+    elif args.method == "single_dict":
+        method = get_inference_model_fn(
+            model_type=SingleDictRecovery,
+            saved_weights_path="SingleDict.pt",
+            device="cuda" if torch.cuda.is_available() else "cpu",
+        )    
+        name = "SingleDict"
+    elif args.method == "shared_dict":
+        method = get_inference_model_fn(
+            model_type=ScaleSpaceRecovery,
+            saved_weights_path="ScaleSpace.pt",
+            device="cuda" if torch.cuda.is_available() else "cpu",
+        )
+        name = "UnrolledDict"
+    elif args.method == "cosine":
+        # TODO: Add cosine transform method here function that take in x_true and data_noise
+        # and returns x_pred and data_pred using cosine transform
+        method = compute_cosine_model
+        name = "CosineTransformDict"
+        raise NotImplementedError("Cosine method is not implemented yet.")    
     else:
         raise ValueError(f"Unsupported method: {args.method}")
 

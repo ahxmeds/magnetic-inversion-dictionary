@@ -5,4 +5,5 @@ __pycache__/
 *.pyo
 *.pyd
 *.npz
+*.pt
 /data/
